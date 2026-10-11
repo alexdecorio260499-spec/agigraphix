@@ -3,7 +3,13 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { MOCK_PROJECTS } from "@/lib/data";
 
-export default async function ProjectDetail({ params }: { params: { slug: string } }) {
+export async function generateStaticParams() {
+  return MOCK_PROJECTS.map((project) => ({
+    slug: project.slug,
+  }));
+}
+
+export default async function ProjectDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const project = MOCK_PROJECTS.find(p => p.slug === slug);
   
