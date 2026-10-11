@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -19,7 +19,7 @@ const navLinks = [
   { name: "Contact", href: "/contact" },
 ];
 
-export function Navbar() {
+function NavbarContent() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -114,5 +114,44 @@ export function Navbar() {
         </div>
       )}
     </header>
+  );
+}
+
+function NavbarSkeleton() {
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 bg-agigraphix-black py-6">
+      <div className="container mx-auto px-6 max-w-7xl">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="text-white text-2xl font-black tracking-wider flex items-center">
+            AGI<span className="text-agigraphix-red">GRAPHIX</span>
+          </Link>
+          <nav className="hidden md:flex items-center space-x-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="text-sm font-medium tracking-wide text-white/80 hover:text-agigraphix-red"
+              >
+                {link.name}
+              </Link>
+            ))}
+            <Link
+              href="/contact"
+              className="bg-agigraphix-red text-white px-6 py-2.5 rounded text-sm font-bold tracking-wide"
+            >
+              Start a Project <span className="ml-2">→</span>
+            </Link>
+          </nav>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+export function Navbar() {
+  return (
+    <Suspense fallback={<NavbarSkeleton />}>
+      <NavbarContent />
+    </Suspense>
   );
 }
